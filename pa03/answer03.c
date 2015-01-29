@@ -7,12 +7,13 @@
 
 char * strcat_ex(char ** dest, int * n, const char * src)
 {
-  size_t dest_len, src_len;
-  if( (*dest == NULL) || ((dest_len = strlen(*dest)) + (src_len=strlen(src) + 1 >*n) ) )
+  size_t dest_len = 0, src_len = strlen(src);
+  if( (*dest == NULL) || ((dest_len = strlen(*dest)) + src_len + 1 > *n) )
     {
-      *n = 1 + (dest_len + src_len) * 2;
-      char * buffer = (char *)malloc(*n*sizeof(char));
-      buffer = strcpy(buffer, *dest);
+      int N = 1 + (dest_len + src_len) * 2;
+      *n = N;
+      char * buffer = malloc(N * sizeof(char));
+      buffer = strcpy(buffer, (const char*) *dest);
       free(*dest);
       dest = &buffer;
     }
@@ -24,8 +25,23 @@ char * strcat_ex(char ** dest, int * n, const char * src)
 
 char * * explode(const char * str, const char * delims, int * arrLen)
 {
-  char * * strArr;
   
+  int * delimPos;
+  int ind;
+  int N = 0;
+  for(ind = 0; ind < *arrLen; ind++)
+    {
+      if(strchr(delims, str[ind]) != NULL) delimPos[N++] = ind;
+    }
+  char * newArr = malloc((* arrLen + 1) * sizeof(char) );
+  newArr = strcpy(newArr,(char *)str);
+  char * * strArr = malloc((N+1) * sizeof(char *));
+    strArr[0] = newArr;
+  for(ind = 0; ind < N; ind++)
+    {
+      newArr[delimPos[ind]] = '\0';
+      strArr[ind+1] = &(newArr[delimPos[ind]+1]);
+    }
   return strArr;
 }
 
