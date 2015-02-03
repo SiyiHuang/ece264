@@ -32,15 +32,16 @@ char * strcat_ex(char ** dest, int * n, const char * src)
 char * * explode(const char * str, const char * delims, int * arrLen)
 {
   
-  int delimPos[*arrLen];
+  int delimPos[20];
   int ind;
   int N = 0;
-  for(ind = 0; ind < *arrLen; ind++)
+  for(ind = 0; str[ind] != '\0'; ind++)
     {
       if(strchr(delims, str[ind]) != NULL) delimPos[N++] = ind;
     }
-  char * newArr = malloc((* arrLen + 1) * sizeof(char) );
-  newArr = strcpy(newArr,(char *)str);
+  * arrLen = N+1;
+  char * newArr = malloc(ind+1);
+  newArr = strcpy(newArr,str);
   char * * strArr = malloc((N+1) * sizeof(char *));
     strArr[0] = newArr;
   for(ind = 0; ind < N; ind++)
