@@ -56,10 +56,24 @@ char * * explode(const char * str, const char * delims, int * arrLen)
 
 char * implode(char * * strArr, int len, const char * glue)
 {
-  return 0;
+  int ind;
+  int n = 0;
+  char * str = 0;
+  for(ind = 0; ind < len; ind++)
+    {
+      str = strcat_ex(& str, &n, strArr[ind]);
+      str = strcat_ex(& str, &n, glue);
+    }
+  return str;
 }
 void sortStringArray(char * * arrString, int len)
 {
+  int compare (const void ** a, const void ** b)
+  {
+    return ( (int)(*a)[0] - (int)(*b)[0] );
+  }
+  
+  qsort(arrString, len, sizeof(char*), compare);
   
 }
 void sortStringCharacters(char * str)
