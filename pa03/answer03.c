@@ -10,6 +10,7 @@ char * strcat_ex(char ** dest, int * n, const char * src)
       char * buffer = (char *) malloc(*n);
       /* Pleas be very careful: If *dest is null. It can't be copied or concatenated. Thus it is very non-intuitive to write these two cases together.  */
       *dest = buffer;
+      (*dest)[0] = '\0';
     }
   else
     {
@@ -81,11 +82,11 @@ char * implode(char * * strArr, int len, const char * glue)
 {
   int ind;
   int n = 0;
-  char * str = 0;
+  char * str = NULL;
   for(ind = 0; ind < len; ind++)
     {
       str = strcat_ex(& str, &n, strArr[ind]);
-      str = strcat_ex(& str, &n, glue);
+      if(ind < len - 1) str = strcat_ex(& str, &n, glue);
     }
   return str;
 }
@@ -93,9 +94,10 @@ char * implode(char * * strArr, int len, const char * glue)
 
 void sortStringArray(char * * arrString, int len)
 {
-   int compare (const void * a, const void * b)
+  int compare (const void * a, const void * b)
   {
-    return ( (int)((char*)b)[0] - (int)((char*)a)[0] );
+    int result = strcmp((const char *) a, (const char*) b); 
+    return result;
   }
   
   qsort(arrString, len, sizeof(char*), compare);
@@ -103,10 +105,22 @@ void sortStringArray(char * * arrString, int len)
 }
 void sortStringCharacters(char * str)
 {
-  
+  int compare (const void * a, const void * b)
+  {
+    return *(const char *)a-*(const char *)b;
+  }
+  qsort(str, strlen(str), sizeof(char), compare);
 }
 void destroyStringArray(char * * strArr, int len)
 {
-  
+  if(strArr != NULL)
+    {
+      int ind;
+      for(ind = 0; ind < len; ind++)
+	{
+	  if(strArr[ind] != NULL) free(strArr[ind]);
+	}
+      free(strArr);
+    }
 }
 
