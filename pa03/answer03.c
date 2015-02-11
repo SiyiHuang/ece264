@@ -31,8 +31,30 @@ char * strcat_ex(char ** dest, int * n, const char * src)
 
 char * * explode(const char * str, const char * delims, int * arrLen)
 {
-  
-  int delimPos[20];
+  int ind, ind2;
+  *arrLen = 1;
+  for(ind = 0; str[ind] != '\0'; ind++)
+    if(strchr(delims, str[ind]) != NULL) *arrLen += 1;
+  int delimPos[*arrLen+1];
+  delimPos[0] = -1;
+  ind2 = 1;
+  for(ind = 0; str[ind]!='\0'; ind++)
+    if(strchr(delims, str[ind]) != NULL) delimPos[ind2++] = ind;
+  delimPos[*arrLen] = strlen(str);
+  char ** strArr = malloc(*arrLen * sizeof(char*));
+  for(ind = 0; ind < *arrLen; ind++)
+    {
+      size_t strl = (delimPos[ind+1]-delimPos[ind]-1);
+      strArr[ind] = malloc((strl+1) * sizeof(char));
+      strArr[ind] = memcpy(strArr[ind], (str+delimPos[ind] + 1),strl);
+      strArr[ind][strl] = '\0';
+    }
+  return strArr;
+
+      
+  //The code bellow is not good. Because freeing some certain string is not
+  //possible. The space is malloc-ed as a whole
+  /*  int delimPos[20];
   int ind;
   int N = 0;
   for(ind = 0; str[ind] != '\0'; ind++)
@@ -50,7 +72,8 @@ char * * explode(const char * str, const char * delims, int * arrLen)
       strArr[ind+1] = &(newArr[delimPos[ind]+1]);
     }
   return strArr;
-  
+  */
+
 }
 
 
@@ -66,11 +89,13 @@ char * implode(char * * strArr, int len, const char * glue)
     }
   return str;
 }
+
+
 void sortStringArray(char * * arrString, int len)
 {
-  int compare (const void ** a, const void ** b)
+   int compare (const void * a, const void * b)
   {
-    return ( (int)(*a)[0] - (int)(*b)[0] );
+    return ( (int)((char*)b)[0] - (int)((char*)a)[0] );
   }
   
   qsort(arrString, len, sizeof(char*), compare);
